@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "mysql2": "^3.14.3",
+    "next": "^16.2.9",
     "react-hot-toast": "^2.6.0",
     "stripe": "^20.0.0",
     "swagger-autogen": "^2.23.7",
