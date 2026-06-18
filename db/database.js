@@ -9,12 +9,14 @@ export default class Database {
     constructor() {
 
         this.#conexao = mysql.createPool({
-            host: 'localhost',
-            user: 'root',       
-            password: '',         
-            database: 'bancoestagiofrotas', 
+            host: 'b7i1t3z2cc2hwsvk8auy-mysql.services.clever-cloud.com',
+            user: 'u08giqjtpyy2rbl6',
+            password: 'BXZ7a9004qzYppFfEe0e',
+            database: 'b7i1t3z2cc2hwsvk8auy',
+            port: 3306,
             waitForConnections: true,
-            connectionLimit: 10
+            connectionLimit: 10,
+            ssl: { rejectUnauthorized: false }
         });
     }
 
