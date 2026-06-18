@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 export class ApiClient {
 
     static instance = null
-  baseUrl = "http://147.15.99.36/api"
+   baseUrl = "https://carcontrol-backend.onrender.com"
     jwt = "";
     headers = {
         "Content-Type": "application/json"
