@@ -22,12 +22,22 @@ const require = createRequire(import.meta.url);
 const outputJson = require("./swaggerOutput.json");
 const server = express();
 
-const origensPermitidas = [
-    "http://localhost:3000",
-    /\.vercel\.app$/,
-    "https://car-control-dusky.vercel.app"
-];
-server.use(cors({ credentials: true, origin: origensPermitidas }));
+server.use(cors({
+    credentials: true,
+    origin: function(origin, callback) {
+        // Permite requisições sem origin (ex: curl, mobile)
+        if (!origin) return callback(null, true);
+        // Permite localhost e qualquer subdominio vercel.app
+        if (
+            origin.includes("localhost") ||
+            origin.includes("vercel.app") ||
+            origin.includes("render.com")
+        ) {
+            return callback(null, true);
+        }
+        return callback(new Error("CORS bloqueado: " + origin));
+    }
+}));
 server.use(express.json());
 server.use(cookieParser());
 server.use("/docs", swaggerUi.serve, swaggerUi.setup(outputJson));
