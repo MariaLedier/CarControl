@@ -12,12 +12,24 @@ export const UserProvider = ({ children }) => {
 
     async function carregarUsuario() {
         try {
-            let response = await apiClient.get("/autenticacao/usuario")
-            if (response) {
-                setUser(response)
+            const token = typeof window !== "undefined" ? localStorage.getItem("carcontrol_token") : null;
+            if (!token) {
+                setLoading(false);
+                return;
+            }
+            const res = await fetch(apiClient.baseUrl + "/autenticacao/usuario", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+            })
+            if (res.ok) {
+                const data = await res.json()
+                setUser(data)
             }
         } catch {
-            // não logado
+            // sem conexao ou nao logado - silencioso
         }
         setLoading(false)
     }
@@ -26,6 +38,7 @@ export const UserProvider = ({ children }) => {
         try {
             await apiClient.post("/autenticacao/logout", {})
         } catch { }
+        apiClient.removeToken()
         setUser(null)
         window.location.href = "/login"
     }

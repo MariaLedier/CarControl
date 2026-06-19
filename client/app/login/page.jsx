@@ -32,6 +32,8 @@ export default function Login() {
             let response = await apiClient.post("/autenticacao/token", obj);
 
             if (response) {
+                // Salva o token no localStorage para uso nas requisições
+                apiClient.setToken(response.token);
                 setUser(response.usuario);
                 if (response.usuario.tipo === 2)
                     router.replace("/dashboard");

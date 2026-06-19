@@ -1,14 +1,11 @@
 import toast from "react-hot-toast";
 
+const TOKEN_KEY = "carcontrol_token";
 
 export class ApiClient {
 
     static instance = null
-   baseUrl = "https://carcontrol-backend.onrender.com"
-    jwt = "";
-    headers = {
-        "Content-Type": "application/json"
-    }
+    baseUrl = "https://carcontrol-backend.onrender.com"
 
     constructor() {
         if(ApiClient.instance != null) {
@@ -23,17 +20,30 @@ export class ApiClient {
         return ApiClient.instance;
     }
 
-    static setJwt(jwt) {
-        ApiClient.instance.jwt = jwt;
+    getHeaders() {
+        const headers = { "Content-Type": "application/json" };
+        const token = typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+        return headers;
+    }
+
+    setToken(token) {
+        if (typeof window !== "undefined") {
+            localStorage.setItem(TOKEN_KEY, token);
+        }
+    }
+
+    removeToken() {
+        if (typeof window !== "undefined") {
+            localStorage.removeItem(TOKEN_KEY);
+        }
     }
 
     async get(endpoint) {
         const response = await fetch(this.baseUrl + endpoint, {
             method: "GET",
-            headers: this.headers,
-            credentials: 'include',
+            headers: this.getHeaders(),
         })
-
         return await this.checarResposta(response);
     }
 
@@ -41,13 +51,11 @@ export class ApiClient {
         try {
             const response = await fetch(this.baseUrl + endpoint, {
                 method: "POST",
-                headers: this.headers,
-                credentials: 'include',
+                headers: this.getHeaders(),
                 body: JSON.stringify(body)
             })
             return await this.checarResposta(response);
         } catch (err) {
-            // Relança para o caller tratar (ex: login)
             throw err;
         }
     }
@@ -55,42 +63,38 @@ export class ApiClient {
     async put(endpoint, body) {
         const response = await fetch(this.baseUrl + endpoint, {
             method: "PUT",
-            headers: this.headers,
-            credentials: 'include',
+            headers: this.getHeaders(),
             body: JSON.stringify(body)
         })
-
         return await this.checarResposta(response);
     }
 
     async delete(endpoint) {
         const response = await fetch(this.baseUrl + endpoint, {
             method: "DELETE",
-            credentials: 'include',
-            headers: this.headers
+            headers: this.getHeaders()
         })
-
         return await this.checarResposta(response);
     }
 
     async patch(endpoint, body) {
         const response = await fetch(this.baseUrl + endpoint, {
             method: "PATCH",
-            headers: this.headers,
-            credentials: 'include',
+            headers: this.getHeaders(),
             body: JSON.stringify(body)
         })
-
         return await this.checarResposta(response);
     }
 
     async postFormData(endpoint, body) {
+        const headers = {};
+        const token = typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
+        if (token) headers["Authorization"] = `Bearer ${token}`;
         const response = await fetch(this.baseUrl + endpoint, {
             method: "POST",
-            credentials: 'include',
+            headers,
             body: body
         })
-
         return await this.checarResposta(response);
     }
 

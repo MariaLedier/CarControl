@@ -15,8 +15,13 @@ export default class AuthMiddleware {
 
     validarToken = async (req, res, next) => {
    
-        if (req.cookies?.token) {
-            let token = req.cookies.token;
+        // Aceita token via cookie OU via header Authorization: Bearer <token>
+        let token = req.cookies?.token;
+        if (!token && req.headers.authorization?.startsWith("Bearer ")) {
+            token = req.headers.authorization.split(" ")[1];
+        }
+
+        if (token) {
             try {
                 let payload = jwt.verify(token, SECRET);
                 let usuarioRepository = new UsuarioRepository();
