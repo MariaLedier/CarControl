@@ -22,7 +22,12 @@ const require = createRequire(import.meta.url);
 const outputJson = require("./swaggerOutput.json");
 const server = express();
 
-server.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+const origensPermitidas = [
+    "http://localhost:3000",
+    /\.vercel\.app$/,
+    "https://car-control-dusky.vercel.app"
+];
+server.use(cors({ credentials: true, origin: origensPermitidas }));
 server.use(express.json());
 server.use(cookieParser());
 server.use("/docs", swaggerUi.serve, swaggerUi.setup(outputJson));
