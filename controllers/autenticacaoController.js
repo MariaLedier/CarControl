@@ -46,7 +46,8 @@ export default class AutenticacaoController {
 
             res.cookie("token", token, {
                 httpOnly: true,
-                sameSite: "lax",
+                sameSite: "none",
+                secure: true,
                 maxAge: 8 * 60 * 60 * 1000
             });
 
@@ -67,7 +68,7 @@ export default class AutenticacaoController {
 
     async logout(req, res) {
         try {
-            res.clearCookie("token");
+            res.clearCookie("token", { sameSite: "none", secure: true });
             return res.status(200).json({ msg: "Logout realizado!" });
         } catch (ex) {
             console.log(ex);
