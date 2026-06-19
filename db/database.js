@@ -15,7 +15,7 @@ export default class Database {
             database: 'b7i1t3z2cc2hwsvk8auy',
             port: 3306,
             waitForConnections: true,
-            connectionLimit: 10,
+            connectionLimit: 4,
             ssl: { rejectUnauthorized: false }
         });
     }
